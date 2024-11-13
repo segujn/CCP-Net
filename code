@@ -52,20 +52,15 @@ class BiLSTM(nn.Module):
 class CCPNet(nn.Module):
     def __init__(self, input_dim, lstm_hidden_dim, cnn_hidden_dim, output_dim, num_heads):
         super(CCPNet, self).__init__()
-        # Multi-Head Self Attention
         self.attention = MultiHeadSelfAttention(input_dim, lstm_hidden_dim, num_heads)
         
-        # BiLSTM layer with lstm_hidden_dim
         self.bilstm = BiLSTM(lstm_hidden_dim, lstm_hidden_dim)
         
-        # Fully connected layer to adjust the BiLSTM output for CNN input
         self.fc_layer = nn.Linear(lstm_hidden_dim * 2, cnn_hidden_dim)
         
-        # CNN layers with cnn_hidden_dim
         self.cnn1 = nn.Conv1d(cnn_hidden_dim, cnn_hidden_dim, kernel_size=5, padding=2)
         self.cnn2 = nn.Conv1d(cnn_hidden_dim, output_dim, kernel_size=3, padding=2)
 
-        # Final output layer
         self.fc = nn.Linear(output_dim, output_dim)
 
     def forward(self, x):
